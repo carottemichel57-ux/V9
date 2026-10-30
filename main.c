@@ -646,6 +646,8 @@ static const char *const CFG_PATHS[] = {
 };
 static int cfg_err = 0;                              /* code d'erreur du premier emplacement (affiche si la sauvegarde echoue) */
 
+static void apply_custom(item_t *it);              /* defini plus bas */
+
 static item_t *find_custom(void) {
     for (int c = 0; c < COUNT(cats); c++) for (int j = 0; j < cats[c].nc; j++)
         if (cats[c].c[j].kind == K_CUSTOM) return &cats[c].c[j];
