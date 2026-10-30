@@ -23,13 +23,22 @@ static uint8_t k_buf[SAITY_MAX_DATA];
 
 /* The user plugin's legacy fallback names are intentionally mapped to this
    private, writable location. No user pointer is passed to ksceIo*. */
+/* pas de libc dans un module kernel (-nostdlib) : on fait les copies a la main */
+static unsigned int k_strlen(const char *s) { unsigned int n = 0; while (s[n]) n++; return n; }
+
 static int make_path(const char *user_path) {
-    char *base = strrchr(user_path, '/');
-    if (!base || !base[1]) return -1;
-    base++;
-    if (strchr(base, ':') || strlen(base) >= SAITY_MAX_PATH - sizeof(SAITY_DIR) - 2) return -1;
-    strcpy(k_path, SAITY_DIR "/");
-    strcat(k_path, base);
+    const char *base = 0;
+    for (const char *p = user_path; *p; p++) if (*p == '/') base = p + 1;
+    if (!base || !base[0]) return -1;
+    unsigned int len = k_strlen(base);
+    if (len >= SAITY_MAX_PATH - sizeof(SAITY_DIR) - 2) return -1;
+    for (unsigned int i = 0; i < len; i++) if (base[i] == ':') return -1;
+    char tmp[SAITY_MAX_PATH];                       /* user_path peut etre k_path lui-meme : on copie le nom d'abord */
+    for (unsigned int i = 0; i <= len; i++) tmp[i] = base[i];
+    unsigned int d = sizeof(SAITY_DIR) - 1;
+    for (unsigned int i = 0; i < d; i++) k_path[i] = SAITY_DIR[i];
+    k_path[d] = '/';
+    for (unsigned int i = 0; i <= len; i++) k_path[d + 1 + i] = tmp[i];
     return 0;
 }
 
