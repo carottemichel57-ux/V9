@@ -1,0 +1,30 @@
+name: Build Saity
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: vitasdk/vitasdk:latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build kernel (stubs pour le plugin)
+        run: |
+          cd kernel
+          mkdir -p build && cd build
+          cmake ..
+          make
+
+      - name: Build Saity plugin
+        run: |
+          mkdir -p build && cd build
+          cmake ..
+          make
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: Saity-plugin
+          path: build/vitacraft.suprx
