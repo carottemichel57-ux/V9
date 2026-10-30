@@ -3,6 +3,15 @@
 #include <string.h>
 #include <psp2kern/kernel/sysmem.h>
 #include <psp2kern/io/fcntl.h>
+#include <psp2kern/kernel/modulemgr.h>
+
+/* securite : au cas ou le header ne definit pas ces constantes */
+#ifndef SCE_KERNEL_START_SUCCESS
+#define SCE_KERNEL_START_SUCCESS 0
+#endif
+#ifndef SCE_KERNEL_STOP_SUCCESS
+#define SCE_KERNEL_STOP_SUCCESS 0
+#endif
 
 #define SAITY_MAX_PATH 256
 #define SAITY_MAX_DATA 65536
