@@ -3,6 +3,7 @@
 #include <string.h>
 #include <psp2kern/kernel/sysmem.h>
 #include <psp2kern/io/fcntl.h>
+#include <psp2kern/io/stat.h>
 #include <psp2kern/kernel/modulemgr.h>
 
 /* securite : au cas ou le header ne definit pas ces constantes */
